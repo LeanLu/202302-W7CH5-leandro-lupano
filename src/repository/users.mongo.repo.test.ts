@@ -4,15 +4,14 @@ import { UsersMongoRepo } from './users.mongo.repo';
 
 jest.mock('./users.mongo.model.js');
 
-jest.mock('../config.js', () => ({
-  _dirname: 'test',
-  config: {
-    secret: 'test',
-  },
-}));
-
 describe('Given UsersMongoRepo repository', () => {
   const repo = UsersMongoRepo.getInstance();
+
+  const mockPopulateFunction = (mockPopulateValue: unknown) => ({
+    populate: jest.fn().mockImplementation(() => ({
+      populate: jest.fn().mockResolvedValue(mockPopulateValue),
+    })),
+  });
 
   describe('When the repository is instanced', () => {
     test('Then, the repo should be instance of UsersMongoRepo', () => {
@@ -21,11 +20,11 @@ describe('Given UsersMongoRepo repository', () => {
   });
 
   describe('When the query method is used', () => {
-    test('Then it should return an empty array', async () => {
-      (UserModel.find as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockReturnValue([{ id: '1' }, { id: '2' }]),
-      }));
-
+    test('Then it should return the result of the users', async () => {
+      const mockPopulateValue = [{ id: '1' }, { id: '2' }];
+      (UserModel.find as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockPopulateValue)
+      );
       const result = await repo.query();
       expect(result).toEqual([{ id: '1' }, { id: '2' }]);
     });
@@ -33,9 +32,10 @@ describe('Given UsersMongoRepo repository', () => {
 
   describe('When the queryId method is used', () => {
     test('Then if the findById method resolve value to an object, it should return the object', async () => {
-      (UserModel.findById as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockResolvedValue({ id: '1' }),
-      }));
+      const mockPopulateValue = { id: '1' };
+      (UserModel.findById as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockPopulateValue)
+      );
 
       const result = await repo.queryId('1');
       expect(UserModel.findById).toHaveBeenCalled();
@@ -43,18 +43,21 @@ describe('Given UsersMongoRepo repository', () => {
     });
 
     test('Then if the findById method resolve value to null, it should throw an Error', async () => {
-      (UserModel.findById as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockResolvedValue(null),
-      }));
+      const mockPopulateValue = null;
+      (UserModel.findById as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockPopulateValue)
+      );
+
       expect(async () => repo.queryId('')).rejects.toThrow();
     });
   });
 
   describe('When the search method is used', () => {
     test('Then if it has an mock query object, it should return find resolved value', async () => {
-      (UserModel.find as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockResolvedValue([{ id: '1' }]),
-      }));
+      const mockPopulateValue = [{ id: '1' }];
+      (UserModel.find as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockPopulateValue)
+      );
 
       const mockQuery = { key: 'test', value: 'test' };
       const result = await repo.search(mockQuery);
@@ -78,11 +81,10 @@ describe('Given UsersMongoRepo repository', () => {
     } as Partial<UserStructure>;
 
     test('Then if the findByIdAndUpdate method resolve value to an object, it should return the object', async () => {
-      (UserModel.findByIdAndUpdate as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockResolvedValue({
-          email: 'test',
-        }),
-      }));
+      const mockPopulateValue = { email: 'test' };
+      (UserModel.findByIdAndUpdate as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockPopulateValue)
+      );
 
       const result = await repo.update(mockUser);
       expect(UserModel.findByIdAndUpdate).toHaveBeenCalled();
@@ -90,9 +92,10 @@ describe('Given UsersMongoRepo repository', () => {
     });
 
     test('Then if the findByIdAndUpdate method resolve value to null, it should throw an Error', async () => {
-      (UserModel.findByIdAndUpdate as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockResolvedValue(null),
-      }));
+      const mockPopulateValue = null;
+      (UserModel.findByIdAndUpdate as jest.Mock).mockImplementation(() =>
+        mockPopulateFunction(mockPopulateValue)
+      );
 
       expect(async () => repo.update(mockUser)).rejects.toThrow();
     });

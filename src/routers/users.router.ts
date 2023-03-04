@@ -15,5 +15,23 @@ debug('Users Router');
 usersRouter.post('/register', controller.register.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
 usersRouter.get('/', logged, controller.getAll.bind(controller));
-usersRouter.get('/friends/:id', logged, controller.getAll.bind(controller));
-usersRouter.get('/enemies/:id', logged, controller.getAll.bind(controller));
+usersRouter.patch(
+  '/add_friends/:id',
+  logged,
+  controller.addFriends.bind(controller)
+);
+usersRouter.patch(
+  '/remove_friends/:id',
+  logged,
+  controller.removeFriends.bind(controller)
+);
+usersRouter.patch(
+  '/add_enemies/:id',
+  logged,
+  controller.getAll.bind(controller)
+);
+usersRouter.patch(
+  '/remove_enemies/:id',
+  logged,
+  controller.addFriends.bind(controller)
+);

@@ -1,14 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
 import { HTTPError } from '../errors/errors.js';
 import { Auth, TokenPayload } from '../helpers/auth.js';
+import createDebug from 'debug';
 
-// Extendemos el type de Request para poder guardar los datos del usuario:
+const debug = createDebug('W7CH5:logged');
+
 export interface RequestPlus extends Request {
   info?: TokenPayload;
 }
 
 export function logged(req: RequestPlus, _resp: Response, next: NextFunction) {
   try {
+    debug('Logged function');
+
     const authHeader = req.get('Authorization');
 
     if (!authHeader)

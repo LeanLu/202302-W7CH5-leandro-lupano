@@ -11,7 +11,6 @@ export default {
     'routers',
     'db',
     'users.mongo.model.ts',
-    'knowledges.mongo.model.ts',
-    'config.ts'
+    'config.ts',
   ],
 };

@@ -23,32 +23,35 @@ export class UsersMongoRepo implements Repo<UserStructure> {
 
   async query(): Promise<UserStructure[]> {
     debug('query method');
-    const data = await UserModel.find().populate(['friends', 'enemies'], {
-      friends: 0,
-      enemies: 0,
-    });
+    const data = await UserModel.find()
+      .populate('friends', {
+        friends: 0,
+        enemies: 0,
+      })
+      .populate('enemies', { friends: 0, enemies: 0 });
     return data;
   }
 
   async queryId(id: string): Promise<UserStructure> {
     debug('queryID method');
-    const data = await UserModel.findById(id).populate(['friends', 'enemies'], {
-      friends: 0,
-      enemies: 0,
-    });
+    const data = await UserModel.findById(id)
+      .populate('friends', {
+        friends: 0,
+        enemies: 0,
+      })
+      .populate('enemies', { friends: 0, enemies: 0 });
     if (!data) throw new HTTPError(404, 'Not found', 'ID not found in queryID');
     return data;
   }
 
   async search(query: { key: string; value: unknown }) {
     debug('search method');
-    const data = await UserModel.find({ [query.key]: query.value }).populate(
-      ['friends', 'enemies'],
-      {
+    const data = await UserModel.find({ [query.key]: query.value })
+      .populate('friends', {
         friends: 0,
         enemies: 0,
-      }
-    );
+      })
+      .populate('enemies', { friends: 0, enemies: 0 });
     return data;
   }
 
@@ -62,10 +65,12 @@ export class UsersMongoRepo implements Repo<UserStructure> {
     debug('update method');
     const data = await UserModel.findByIdAndUpdate(info.id, info, {
       new: true,
-    }).populate(['friends', 'enemies'], {
-      friends: 0,
-      enemies: 0,
-    });
+    })
+      .populate('friends', {
+        friends: 0,
+        enemies: 0,
+      })
+      .populate('enemies', { friends: 0, enemies: 0 });
     if (!data) throw new HTTPError(404, 'Not found', 'ID not found in update');
     return data;
   }
