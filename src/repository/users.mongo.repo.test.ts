@@ -64,9 +64,7 @@ describe('Given UsersMongoRepo repository', () => {
 
   describe('When the create method is used', () => {
     test('Then if it has an object to create, it should return the created object', async () => {
-      (UserModel.create as jest.Mock).mockImplementation(() => ({
-        populate: jest.fn().mockResolvedValue({ email: 'test' }),
-      }));
+      (UserModel.create as jest.Mock).mockResolvedValue({ email: 'test' });
 
       const result = await repo.create({ email: 'test' });
       expect(UserModel.create).toHaveBeenCalled();

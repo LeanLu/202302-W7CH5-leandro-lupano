@@ -1,9 +1,8 @@
-import { KnowledgeStructure } from './knowledge.model';
-
 export type UserStructure = {
   id: string;
-  userName: string;
   email: string;
+  userName: string;
   password: string;
-  knowledges: KnowledgeStructure[];
+  friends: UserStructure[];
+  enemies: UserStructure[];
 };

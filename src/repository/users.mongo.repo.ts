@@ -4,7 +4,7 @@ import { Repo } from './repo.interface';
 import { UserModel } from './users.mongo.model.js';
 import createDebug from 'debug';
 
-const debug = createDebug('W7CH2:users-repo');
+const debug = createDebug('W7CH5:users-repo');
 
 export class UsersMongoRepo implements Repo<UserStructure> {
   private static instance: UsersMongoRepo;
@@ -23,14 +23,18 @@ export class UsersMongoRepo implements Repo<UserStructure> {
 
   async query(): Promise<UserStructure[]> {
     debug('query method');
-    const data = await UserModel.find().populate('knowledges', { owner: 0 });
+    const data = await UserModel.find().populate(['friends', 'enemies'], {
+      friends: 0,
+      enemies: 0,
+    });
     return data;
   }
 
   async queryId(id: string): Promise<UserStructure> {
     debug('queryID method');
-    const data = await UserModel.findById(id).populate('knowledges', {
-      owner: 0,
+    const data = await UserModel.findById(id).populate(['friends', 'enemies'], {
+      friends: 0,
+      enemies: 0,
     });
     if (!data) throw new HTTPError(404, 'Not found', 'ID not found in queryID');
     return data;
@@ -39,17 +43,18 @@ export class UsersMongoRepo implements Repo<UserStructure> {
   async search(query: { key: string; value: unknown }) {
     debug('search method');
     const data = await UserModel.find({ [query.key]: query.value }).populate(
-      'knowledges',
-      { owner: 0 }
+      ['friends', 'enemies'],
+      {
+        friends: 0,
+        enemies: 0,
+      }
     );
     return data;
   }
 
   async create(info: Partial<UserStructure>): Promise<UserStructure> {
     debug('create method');
-    const data = (await UserModel.create(info)).populate('knowledges', {
-      owner: 0,
-    });
+    const data = await UserModel.create(info);
     return data;
   }
 
@@ -57,7 +62,10 @@ export class UsersMongoRepo implements Repo<UserStructure> {
     debug('update method');
     const data = await UserModel.findByIdAndUpdate(info.id, info, {
       new: true,
-    }).populate('knowledges', { owner: 0 });
+    }).populate(['friends', 'enemies'], {
+      friends: 0,
+      enemies: 0,
+    });
     if (!data) throw new HTTPError(404, 'Not found', 'ID not found in update');
     return data;
   }

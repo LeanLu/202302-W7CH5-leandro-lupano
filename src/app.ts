@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import { knowledgesRouter } from './routers/knowledges.router.js';
 import { usersRouter } from './routers/users.router.js';
 import { CustomError } from './errors/errors.js';
 import path from 'path';
@@ -25,7 +24,6 @@ debug({ __dirname });
 app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.use('/users', usersRouter);
-app.use('/knowledges', knowledgesRouter);
 
 app.use(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,7 +48,7 @@ app.use('*', (_req, resp, next) => {
   resp
     .status(404)
     .send(
-      `<h1>Sorry, the path is not valid. Did you mean "http://localhost:5500/knowledges/"?<h1>`
+      `<h1>Sorry, the path is not valid. Did you mean "http://localhost:7500/users/"?<h1>`
     );
   next();
 });

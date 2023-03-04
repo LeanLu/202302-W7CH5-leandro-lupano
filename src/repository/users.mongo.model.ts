@@ -8,15 +8,28 @@ const userSchema = new Schema<UserStructure>({
     unique: true,
   },
 
+  userName: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
   password: {
     type: String,
     required: true,
   },
 
-  knowledges: [
+  friends: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Knowledge',
+      ref: 'User',
+    },
+  ],
+
+  enemies: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
     },
   ],
 });
