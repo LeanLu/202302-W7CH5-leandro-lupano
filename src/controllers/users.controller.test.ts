@@ -15,9 +15,9 @@ jest.mock('../config.js', () => ({
 
 describe('Given the UsersController', () => {
   const mockRepo = {
+    query: jest.fn(),
     create: jest.fn(),
     search: jest.fn(),
-    query: jest.fn(),
   } as unknown as Repo<UserStructure>;
 
   const controller = new UsersController(mockRepo);
@@ -30,9 +30,8 @@ describe('Given the UsersController', () => {
   const next = jest.fn() as unknown as NextFunction;
 
   describe('When getAll method is called', () => {
+    const req = {} as unknown as Request;
     test('Then if the user information is completed, resp.json should been called ', async () => {
-      const req = {} as unknown as Request;
-
       await controller.getAll(req, resp, next);
 
       expect(mockRepo.query).toHaveBeenCalled();
@@ -40,8 +39,6 @@ describe('Given the UsersController', () => {
     });
 
     test('Then if the repo`s query() method throw an error, next function have been called', async () => {
-      const req = {} as unknown as Request;
-
       (mockRepo.query as jest.Mock).mockRejectedValue('Error');
       await controller.getAll(req, resp, next);
       expect(next).toHaveBeenCalled();
@@ -52,7 +49,7 @@ describe('Given the UsersController', () => {
     test('Then if the user information is completed, it should return the resp.satus and resp.json', async () => {
       const req = {
         body: {
-          email: 'test',
+          userName: 'test',
           password: 'test',
         },
       } as unknown as Request;
@@ -63,7 +60,7 @@ describe('Given the UsersController', () => {
       expect(resp.json).toHaveBeenCalled();
     });
 
-    test('Then if user information in the body, has not email, it should be catch the error and next function have been called', async () => {
+    test('Then if user information in the body, has not user name, it should be catch the error and next function have been called', async () => {
       const req = {
         body: {
           password: 'test',
@@ -77,7 +74,7 @@ describe('Given the UsersController', () => {
     test('Then if user information in the body, has not password, it should be catch the error and next function have been called', async () => {
       const req = {
         body: {
-          email: 'test',
+          userName: 'test',
         },
       } as unknown as Request;
 
@@ -90,7 +87,7 @@ describe('Given the UsersController', () => {
     test('Then if the user information is completed, it should return the resp.status and resp.json', async () => {
       const req = {
         body: {
-          email: 'test',
+          userName: 'test',
           password: 'test',
         },
       } as unknown as Request;
@@ -118,7 +115,7 @@ describe('Given the UsersController', () => {
     test('Then if the user information has not password, it should be catch the error and next function have been called', async () => {
       const req = {
         body: {
-          email: 'test',
+          userName: 'test',
         },
       } as unknown as Request;
 
@@ -129,7 +126,7 @@ describe('Given the UsersController', () => {
     test('Then if the user information is complete but the search method return an empty array, it should be catch the error and next function have been called', async () => {
       const req = {
         body: {
-          email: 'test',
+          userName: 'test',
           password: 'test',
         },
       } as unknown as Request;
@@ -143,7 +140,7 @@ describe('Given the UsersController', () => {
     test('Then if the user information is complete but the compare method of Auth return false, it should be catch the error and next function have been called', async () => {
       const req = {
         body: {
-          email: 'test',
+          userName: 'test',
           password: 'test',
         },
       } as unknown as Request;

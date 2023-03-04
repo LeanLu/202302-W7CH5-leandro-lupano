@@ -5,7 +5,7 @@ import { HTTPError } from '../errors/errors.js';
 
 export interface TokenPayload extends jwt.JwtPayload {
   id: string;
-  email: string;
+  userName: string;
   role: string;
 }
 
