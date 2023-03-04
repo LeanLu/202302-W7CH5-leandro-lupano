@@ -1,12 +1,12 @@
 {
-  "name": "challenge-05-week-07",
+  "name": "week-07_challenge-05",
   "version": "1.0.0",
   "description": "Server Social Network",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env DEBUG=W7CH2* PORT=6500 node ./dist/index.js -w",
-    "start:mon": "cross-env DEBUG=W7CH2* PORT=6500 nodemon ./dist/index.js",
+    "start": "cross-env DEBUG=W7CH5* PORT=7500 node ./dist/index.js -w",
+    "start:mon": "cross-env DEBUG=W7CH5* PORT=7500 nodemon ./dist/index.js",
     "build": "tsc -w",
     "test": "jest --watchAll --coverage",
     "test:prod": "jest --watchAll --coverage --watchAll=false --passWithNoTests",
@@ -23,15 +23,15 @@
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-xo": "^0.43.1",
     "eslint-config-xo-typescript": "^0.56.0",
-    "typescript": "^4.9.5",
-    "husky": "^8.0.0"
+    "husky": "^8.0.0",
+    "typescript": "^4.9.5"
   },
   "prettier": {
     "singleQuote": true
   },
   "dependencies": {
-    "@types/cors": "^2.8.13",
     "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.13",
     "@types/debug": "^4.1.7",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.4.0",
@@ -50,7 +50,7 @@
     "jest-ts-webcompat-resolver": "^1.0.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.0",
-    "ts-jest": "^29.0.5",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "ts-jest": "^29.0.5"
   }
 }
