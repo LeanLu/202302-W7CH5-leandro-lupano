@@ -17,12 +17,12 @@ export class Auth {
   }
 
   static verifyJWT(token: string): TokenPayload {
-    const result = jwt.verify(token, config.jwtSecret as string);
+    const tokenInfo = jwt.verify(token, config.jwtSecret as string);
 
-    if (typeof result === 'string')
-      throw new HTTPError(498, 'Invalid Token', result);
+    if (typeof tokenInfo === 'string')
+      throw new HTTPError(498, 'Invalid Token', tokenInfo);
 
-    return result as TokenPayload;
+    return tokenInfo as TokenPayload;
   }
 
   static hash(value: string) {
