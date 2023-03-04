@@ -4,6 +4,7 @@ import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 import { HTTPError } from '../errors/errors.js';
 import { Auth, TokenPayload } from '../helpers/auth.js';
+import { RequestPlus } from '../interceptors/logged';
 
 const debug = createDebug('W7CH5:users-controller');
 
@@ -89,6 +90,69 @@ export class UsersController {
         results: {
           token,
         },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async addFriends(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug('addFriends method');
+
+      const userId = req.info?.id;
+
+      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      const actualUser = await this.repoUser.queryId(userId);
+
+      const friendUser = await this.repoUser.queryId(req.params.id);
+
+      if (!friendUser)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      if (actualUser.friends.find((item) => item.id === friendUser.id))
+        throw new HTTPError(
+          405,
+          'Not allowed',
+          'This new user is already added as friend'
+        );
+
+      actualUser.friends.push(friendUser);
+
+      this.repoUser.update(actualUser);
+
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async removeFriends(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug('removeFriends method');
+
+      const userId = req.info?.id;
+
+      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      const actualUser = await this.repoUser.queryId(userId);
+
+      const friendUser = await this.repoUser.queryId(req.params.id);
+
+      if (!friendUser)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      actualUser.friends = actualUser.friends.filter(
+        (item) => item.id !== friendUser.id
+      );
+
+      this.repoUser.update(actualUser);
+
+      resp.json({
+        results: [actualUser],
       });
     } catch (error) {
       next(error);
