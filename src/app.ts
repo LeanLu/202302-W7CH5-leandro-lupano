@@ -8,7 +8,7 @@ import path from 'path';
 import { __dirname } from './config.js';
 import createDebug from 'debug';
 
-const debug = createDebug('W7CH2:app');
+const debug = createDebug('W7CH5:app');
 
 export const app = express();
 
