@@ -1,6 +1,6 @@
 # Week 07 - Challenge 05 - WeekEnd
 
-## Red social
+## Red social - Backend:
 
 Crea una red social con React. La aplicación sólo se puede usar estando logueado (en abierto únicamente se puede ver login y registro), y una vez iniciada la sesión, el usuario puede ver un listado de todos los usuarios de la red.
 
@@ -26,3 +26,8 @@ New relationship: Luis & Marta (friends)
 New relationship: Luis & Marta (enemies)
 
 Removed relationship: Luis & Marta
+
+## Errores:
+
+- Testing el ".catch(error)" del método updateUserDetails del Controller:
+- Intento de register desde el Front.
