@@ -48,7 +48,7 @@ app.use('*', (_req, resp, next) => {
   resp
     .status(404)
     .send(
-      `<h1>Sorry, the path is not valid. Did you mean "http://localhost:7500/users/"?<h1>`
+      `<h1>Sorry, the path is not valid. Please, check the information.<h1>`
     );
   next();
 });
