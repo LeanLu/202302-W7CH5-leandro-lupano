@@ -14,20 +14,6 @@ export class UsersController {
     debug('Controller instanced');
   }
 
-  async getAll(_req: Request, resp: Response, next: NextFunction) {
-    try {
-      debug('getAll method');
-
-      const data = await this.repoUser.query();
-
-      resp.json({
-        results: data,
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
-
   async register(req: Request, resp: Response, next: NextFunction) {
     try {
       debug('register:post method');
@@ -96,9 +82,60 @@ export class UsersController {
     }
   }
 
-  async addFriends(req: RequestPlus, resp: Response, next: NextFunction) {
+  async getAll(_req: Request, resp: Response, next: NextFunction) {
     try {
-      debug('addFriends method');
+      debug('getAll method');
+
+      const data = await this.repoUser.query();
+
+      resp.json({
+        results: data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateUserDetails(
+    req: RequestPlus,
+    resp: Response,
+    next: NextFunction
+  ) {
+    try {
+      debug('updateUserDetails method');
+
+      const userId = req.info?.id;
+
+      if (!userId)
+        throw new HTTPError(404, 'Not found', 'Not found user ID in Token');
+
+      const userIdToUpdate = req.params.id;
+
+      if (!req.params.id)
+        throw new HTTPError(404, 'Not found', 'Not found user ID in params');
+
+      if (userId !== userIdToUpdate)
+        throw new HTTPError(
+          401,
+          'Unauthorized',
+          'The ID from params is not equal to ID from Token'
+        );
+
+      req.body.id = userId;
+
+      const newUserInfo = await this.repoUser.update(req.body);
+
+      resp.json({
+        results: [newUserInfo],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async addFriend(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug('addFriend method');
 
       const userId = req.info?.id;
 
@@ -130,9 +167,9 @@ export class UsersController {
     }
   }
 
-  async removeFriends(req: RequestPlus, resp: Response, next: NextFunction) {
+  async removeFriend(req: RequestPlus, resp: Response, next: NextFunction) {
     try {
-      debug('removeFriends method');
+      debug('removeFriend method');
 
       const userId = req.info?.id;
 
@@ -147,6 +184,69 @@ export class UsersController {
 
       actualUser.friends = actualUser.friends.filter(
         (item) => item.id !== friendUser.id
+      );
+
+      this.repoUser.update(actualUser);
+
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async addEnemy(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug('addEnemy method');
+
+      const userId = req.info?.id;
+
+      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      const actualUser = await this.repoUser.queryId(userId);
+
+      const enemyUser = await this.repoUser.queryId(req.params.id);
+
+      if (!enemyUser)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      if (actualUser.enemies.find((item) => item.id === enemyUser.id))
+        throw new HTTPError(
+          405,
+          'Not allowed',
+          'This new user is already added as enemy'
+        );
+
+      actualUser.enemies.push(enemyUser);
+
+      this.repoUser.update(actualUser);
+
+      resp.json({
+        results: [actualUser],
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async removeEnemy(req: RequestPlus, resp: Response, next: NextFunction) {
+    try {
+      debug('removeEnemy method');
+
+      const userId = req.info?.id;
+
+      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      const actualUser = await this.repoUser.queryId(userId);
+
+      const enemyUser = await this.repoUser.queryId(req.params.id);
+
+      if (!enemyUser)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
+
+      actualUser.enemies = actualUser.enemies.filter(
+        (item) => item.id !== enemyUser.id
       );
 
       this.repoUser.update(actualUser);

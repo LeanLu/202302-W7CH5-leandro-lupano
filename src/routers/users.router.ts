@@ -16,22 +16,27 @@ usersRouter.post('/register', controller.register.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
 usersRouter.get('/', logged, controller.getAll.bind(controller));
 usersRouter.patch(
+  '/details/:id',
+  logged,
+  controller.updateUserDetails.bind(controller)
+);
+usersRouter.patch(
   '/add_friends/:id',
   logged,
-  controller.addFriends.bind(controller)
+  controller.addFriend.bind(controller)
 );
 usersRouter.patch(
   '/remove_friends/:id',
   logged,
-  controller.removeFriends.bind(controller)
+  controller.removeFriend.bind(controller)
 );
 usersRouter.patch(
   '/add_enemies/:id',
   logged,
-  controller.getAll.bind(controller)
+  controller.addEnemy.bind(controller)
 );
 usersRouter.patch(
   '/remove_enemies/:id',
   logged,
-  controller.addFriends.bind(controller)
+  controller.removeEnemy.bind(controller)
 );
