@@ -32,22 +32,6 @@ describe('Given the UsersController', () => {
 
   const next = jest.fn() as unknown as NextFunction;
 
-  describe('When getAll method is called', () => {
-    const req = {} as unknown as Request;
-    test('Then if the user information is completed, resp.json should been called ', async () => {
-      await controller.getAll(req, resp, next);
-
-      expect(mockRepo.query).toHaveBeenCalled();
-      expect(resp.json).toHaveBeenCalled();
-    });
-
-    test('Then if the repo`s query() method throw an error, next function have been called', async () => {
-      (mockRepo.query as jest.Mock).mockRejectedValue('Error');
-      await controller.getAll(req, resp, next);
-      expect(next).toHaveBeenCalled();
-    });
-  });
-
   describe('When Register method is called', () => {
     test('Then if the user information is completed, it should return the resp.satus and resp.json', async () => {
       const req = {
@@ -157,7 +141,67 @@ describe('Given the UsersController', () => {
     });
   });
 
-  describe('When addFriends method is called', () => {
+  describe('When getAll method is called', () => {
+    const req = {} as unknown as Request;
+    test('Then if the user information is completed, resp.json should been called ', async () => {
+      await controller.getAll(req, resp, next);
+
+      expect(mockRepo.query).toHaveBeenCalled();
+      expect(resp.json).toHaveBeenCalled();
+    });
+
+    test('Then if the repo`s query() method throw an error, next function have been called', async () => {
+      (mockRepo.query as jest.Mock).mockRejectedValue('Error');
+      await controller.getAll(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('When updateUserDetails method is called', () => {
+    test('Then if the user information is completed, it should return the resp.json', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '1' },
+        body: { id: '1' },
+      } as unknown as RequestPlus;
+
+      (mockRepo.update as jest.Mock).mockResolvedValue({ id: '1' });
+
+      await controller.updateUserDetails(req, resp, next);
+      expect(resp.json).toHaveBeenCalled();
+    });
+
+    test('Then if the req.info.id is undefined, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: undefined },
+      } as unknown as RequestPlus;
+
+      await controller.updateUserDetails(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    test('Then if the req.params.id is undefined, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: undefined },
+      } as unknown as RequestPlus;
+
+      await controller.updateUserDetails(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    test('Then if the req.info.id is not equal to req.params.id, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '2' },
+      } as unknown as RequestPlus;
+
+      await controller.updateUserDetails(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('When addFriend method is called', () => {
     test('Then if the user information is completed, it should return the resp.json', async () => {
       const req = {
         info: { id: '1' },
@@ -169,7 +213,7 @@ describe('Given the UsersController', () => {
         id: '2',
       });
 
-      await controller.addFriends(req, resp, next);
+      await controller.addFriend(req, resp, next);
       expect(resp.json).toHaveBeenCalled();
     });
 
@@ -178,11 +222,11 @@ describe('Given the UsersController', () => {
         info: { id: undefined },
       } as unknown as RequestPlus;
 
-      await controller.addFriends(req, resp, next);
+      await controller.addFriend(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
 
-    test('Then if if the queryId of the repoMock resolved undefined, it should be catch the error and next function have been called', async () => {
+    test('Then if the queryId of the repoMock resolved undefined, it should be catch the error and next function have been called', async () => {
       const req = {
         info: { id: '1' },
         params: { id: '1' },
@@ -190,11 +234,11 @@ describe('Given the UsersController', () => {
 
       (mockRepo.queryId as jest.Mock).mockResolvedValue(undefined);
 
-      await controller.addFriends(req, resp, next);
+      await controller.addFriend(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
 
-    test('Then if if the the new user is already as as friend, it should be catch the error and next function have been called', async () => {
+    test('Then if the the new user is already a friend, it should be catch the error and next function have been called', async () => {
       const req = {
         info: { id: '1' },
         params: { id: '1' },
@@ -205,12 +249,12 @@ describe('Given the UsersController', () => {
         id: '1',
       });
 
-      await controller.addFriends(req, resp, next);
+      await controller.addFriend(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
   });
 
-  describe('When removeFriends method is called', () => {
+  describe('When removeFriend method is called', () => {
     test('Then if the user information is completed, it should return the resp.json', async () => {
       const req = {
         info: { id: '1' },
@@ -222,7 +266,7 @@ describe('Given the UsersController', () => {
         id: '2',
       });
 
-      await controller.removeFriends(req, resp, next);
+      await controller.removeFriend(req, resp, next);
       expect(resp.json).toHaveBeenCalled();
     });
 
@@ -231,7 +275,98 @@ describe('Given the UsersController', () => {
         info: { id: undefined },
       } as unknown as RequestPlus;
 
-      await controller.removeFriends(req, resp, next);
+      await controller.removeFriend(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    test('Then if the queryId of the repoMock resolved undefined, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '1' },
+      } as unknown as RequestPlus;
+
+      (mockRepo.queryId as jest.Mock).mockResolvedValue(undefined);
+
+      await controller.removeFriend(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('When addEnemy method is called', () => {
+    test('Then if the user information is completed, it should return the resp.json', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '1' },
+      } as unknown as RequestPlus;
+
+      (mockRepo.queryId as jest.Mock).mockResolvedValue({
+        enemies: [{ id: '1' }],
+        id: '2',
+      });
+
+      await controller.addEnemy(req, resp, next);
+      expect(resp.json).toHaveBeenCalled();
+    });
+
+    test('Then if the req.info.id is undefined, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: undefined },
+      } as unknown as RequestPlus;
+
+      await controller.addEnemy(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    test('Then if the queryId of the repoMock resolved undefined, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '1' },
+      } as unknown as RequestPlus;
+
+      (mockRepo.queryId as jest.Mock).mockResolvedValue(undefined);
+
+      await controller.addEnemy(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    test('Then if the the new user is already a enemy, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '1' },
+      } as unknown as RequestPlus;
+
+      (mockRepo.queryId as jest.Mock).mockResolvedValue({
+        enemies: [{ id: '1' }],
+        id: '1',
+      });
+
+      await controller.addEnemy(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('When removeEnemy method is called', () => {
+    test('Then if the user information is completed, it should return the resp.json', async () => {
+      const req = {
+        info: { id: '1' },
+        params: { id: '1' },
+      } as unknown as RequestPlus;
+
+      (mockRepo.queryId as jest.Mock).mockResolvedValue({
+        enemies: [{ id: '1' }, { id: '2' }],
+        id: '2',
+      });
+
+      await controller.removeEnemy(req, resp, next);
+      expect(resp.json).toHaveBeenCalled();
+    });
+
+    test('Then if the req.info.id is undefined, it should be catch the error and next function have been called', async () => {
+      const req = {
+        info: { id: undefined },
+      } as unknown as RequestPlus;
+
+      await controller.removeEnemy(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
 
@@ -243,7 +378,7 @@ describe('Given the UsersController', () => {
 
       (mockRepo.queryId as jest.Mock).mockResolvedValue(undefined);
 
-      await controller.removeFriends(req, resp, next);
+      await controller.removeEnemy(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
   });
