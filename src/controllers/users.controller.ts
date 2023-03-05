@@ -4,7 +4,7 @@ import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
 import { HTTPError } from '../errors/errors.js';
 import { Auth, TokenPayload } from '../helpers/auth.js';
-import { RequestPlus } from '../interceptors/logged';
+import { RequestPlus } from '../interceptors/interceptors';
 
 const debug = createDebug('W7CH5:users-controller');
 
@@ -103,25 +103,8 @@ export class UsersController {
   ) {
     try {
       debug('updateUserDetails method');
-
-      const userId = req.info?.id;
-
-      if (!userId)
-        throw new HTTPError(404, 'Not found', 'Not found user ID in Token');
-
-      const userIdToUpdate = req.params.id;
-
-      if (!req.params.id)
-        throw new HTTPError(404, 'Not found', 'Not found user ID in params');
-
-      if (userId !== userIdToUpdate)
-        throw new HTTPError(
-          401,
-          'Unauthorized',
-          'The ID from params is not equal to ID from Token'
-        );
-
-      req.body.id = userId;
+      // Para este método tiene que estar Authorized.
+      // Ahí se hacen las comprobaciones y resguardos necesarios.
 
       const newUserInfo = await this.repoUser.update(req.body);
 
@@ -137,11 +120,10 @@ export class UsersController {
     try {
       debug('addFriend method');
 
-      const userId = req.info?.id;
+      if (!req.info?.id)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
 
-      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
-
-      const actualUser = await this.repoUser.queryId(userId);
+      const actualUser = await this.repoUser.queryId(req.info?.id);
 
       const friendUser = await this.repoUser.queryId(req.params.id);
 
@@ -171,11 +153,10 @@ export class UsersController {
     try {
       debug('removeFriend method');
 
-      const userId = req.info?.id;
+      if (!req.info?.id)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
 
-      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
-
-      const actualUser = await this.repoUser.queryId(userId);
+      const actualUser = await this.repoUser.queryId(req.info?.id);
 
       const friendUser = await this.repoUser.queryId(req.params.id);
 
@@ -200,11 +181,10 @@ export class UsersController {
     try {
       debug('addEnemy method');
 
-      const userId = req.info?.id;
+      if (!req.info?.id)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
 
-      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
-
-      const actualUser = await this.repoUser.queryId(userId);
+      const actualUser = await this.repoUser.queryId(req.info?.id);
 
       const enemyUser = await this.repoUser.queryId(req.params.id);
 
@@ -234,11 +214,10 @@ export class UsersController {
     try {
       debug('removeEnemy method');
 
-      const userId = req.info?.id;
+      if (!req.info?.id)
+        throw new HTTPError(404, 'Not found', 'Not found user ID');
 
-      if (!userId) throw new HTTPError(404, 'Not found', 'Not found user ID');
-
-      const actualUser = await this.repoUser.queryId(userId);
+      const actualUser = await this.repoUser.queryId(req.info?.id);
 
       const enemyUser = await this.repoUser.queryId(req.params.id);
 
