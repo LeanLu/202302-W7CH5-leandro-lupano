@@ -42,43 +42,43 @@ describe('Given Interceptors class', () => {
   });
 
   describe('When the Authorized method is called', () => {
-    test('Then if the user information is completed, it should return the resp.json', async () => {
+    test('Then if the user information is completed, it should return the resp.json', () => {
       const req = {
         info: { id: '1' },
         params: { id: '1' },
         body: { id: '1' },
       } as unknown as RequestPlus;
 
-      await Interceptors.authorized(req, resp, next);
+      Interceptors.authorized(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
 
-    test('Then if the req.info is undefined, it should be catch the error and next function have been called', async () => {
+    test('Then if the req.info is undefined, it should be catch the error and next function have been called', () => {
       const req = {
         info: undefined,
       } as unknown as RequestPlus;
 
-      await Interceptors.authorized(req, resp, next);
+      Interceptors.authorized(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
 
-    test('Then if the req.params.id is undefined, it should be catch the error and next function have been called', async () => {
+    test('Then if the req.params.id is undefined, it should be catch the error and next function have been called', () => {
       const req = {
         info: { id: '1' },
         params: { id: undefined },
       } as unknown as RequestPlus;
 
-      await Interceptors.authorized(req, resp, next);
+      Interceptors.authorized(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
 
-    test('Then if the req.info.id is not equal to req.params.id, it should be catch the error and next function have been called', async () => {
+    test('Then if the req.info.id is not equal to req.params.id, it should be catch the error and next function have been called', () => {
       const req = {
         info: { id: '1' },
         params: { id: '2' },
       } as unknown as RequestPlus;
 
-      await Interceptors.authorized(req, resp, next);
+      Interceptors.authorized(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
   });
