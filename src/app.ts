@@ -1,11 +1,11 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { usersRouter } from './routers/users.router.js';
-import { CustomError } from './errors/errors.js';
 import path from 'path';
-import { __dirname } from './config.js';
+import { __dirname } from './helpers/files.js';
 import createDebug from 'debug';
+import { errorsMiddleware } from './middleware/errors.middleware.js';
 
 const debug = createDebug('W7CH5:app');
 
@@ -25,24 +25,7 @@ app.use(express.static(path.resolve(__dirname, 'public')));
 
 app.use('/users', usersRouter);
 
-app.use(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  (error: CustomError, _req: Request, resp: Response, next: NextFunction) => {
-    const status = error.statusCode || 500;
-    const statusMessage = error.statusMessage || 'Internal server error';
-
-    resp.status(status);
-    resp.json({
-      error: [
-        {
-          status,
-          statusMessage,
-        },
-      ],
-    });
-    debug(status, statusMessage, error.message);
-  }
-);
+app.use(errorsMiddleware);
 
 app.use('*', (_req, resp, next) => {
   resp

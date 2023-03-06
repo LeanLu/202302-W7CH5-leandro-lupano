@@ -139,7 +139,7 @@ export class UsersController {
 
       actualUser.friends.push(friendUser);
 
-      this.repoUser.update(actualUser);
+      await this.repoUser.update(actualUser);
 
       resp.json({
         results: [actualUser],
@@ -167,7 +167,7 @@ export class UsersController {
         (item) => item.id !== friendUser.id
       );
 
-      this.repoUser.update(actualUser);
+      await this.repoUser.update(actualUser);
 
       resp.json({
         results: [actualUser],
@@ -200,7 +200,7 @@ export class UsersController {
 
       actualUser.enemies.push(enemyUser);
 
-      this.repoUser.update(actualUser);
+      await this.repoUser.update(actualUser);
 
       resp.json({
         results: [actualUser],
@@ -228,7 +228,7 @@ export class UsersController {
         (item) => item.id !== enemyUser.id
       );
 
-      this.repoUser.update(actualUser);
+      await this.repoUser.update(actualUser);
 
       resp.json({
         results: [actualUser],
