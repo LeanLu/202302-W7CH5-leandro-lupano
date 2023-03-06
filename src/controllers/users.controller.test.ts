@@ -150,7 +150,7 @@ describe('Given the UsersController', () => {
     });
 
     test('Then if the repo`s query() method throw an error, next function have been called', async () => {
-      (mockRepo.query as jest.Mock).mockRejectedValue('Error');
+      (mockRepo.query as jest.Mock).mockRejectedValueOnce('Error');
       await controller.getAll(req, resp, next);
       expect(next).toHaveBeenCalled();
     });
@@ -169,14 +169,11 @@ describe('Given the UsersController', () => {
       expect(resp.json).toHaveBeenCalled();
     });
 
-    // PROBLEMAS CON ESTE TEST:
-    // AL EJECUTARLO SOLO, PASA EL TEST CORRECTAMENTE.
-    // AL EJECUTARLO CON TODOS, ARROJA UN ERROR.
-    // test('Then if the user information is completed, it should return the resp.json', async () => {
-    //   (mockRepo.update as jest.Mock).mockRejectedValue('Error');
-    //   await controller.updateUserDetails(req, resp, next);
-    //   expect(next).toHaveBeenCalled();
-    // });
+    test('Then if the user information is completed, it should return the resp.json', async () => {
+      (mockRepo.update as jest.Mock).mockRejectedValueOnce('Problematic Error');
+      await controller.updateUserDetails(req, resp, next);
+      expect(next).toHaveBeenCalled();
+    });
   });
 
   describe('When addFriend method is called', () => {
