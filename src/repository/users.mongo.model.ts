@@ -19,6 +19,10 @@ const userSchema = new Schema<UserStructure>({
     required: true,
   },
 
+  picture: {
+    type: String,
+  },
+
   friends: [
     {
       type: Schema.Types.ObjectId,

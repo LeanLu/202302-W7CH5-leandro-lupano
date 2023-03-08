@@ -3,6 +3,7 @@ export type UserStructure = {
   email: string;
   userName: string;
   password: string;
+  picture: string;
   friends: UserStructure[];
   enemies: UserStructure[];
 };
