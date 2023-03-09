@@ -2,8 +2,9 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { usersRouter } from './routers/users.router.js';
-import path from 'path';
-import { __dirname } from './helpers/files.js';
+// TEMPORAL PARA SUPER-TEST:
+// import path from 'path';
+// import { __dirname } from './helpers/files.js';
 import createDebug from 'debug';
 import { errorsMiddleware } from './middleware/errors.middleware.js';
 
@@ -20,8 +21,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors(corsOptions));
 
-debug({ __dirname });
-app.use(express.static(path.resolve(__dirname, 'public')));
+// TEMPORAL PARA SUPER-TEST:
+// debug({ __dirname });
+// app.use(express.static(path.resolve(__dirname, 'public')));
+debug('App initiated');
 
 app.use('/users', usersRouter);
 
